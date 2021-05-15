@@ -8,15 +8,16 @@ def execc(cmd):
     print(subprocess.check_output(cmd, shell=True))
 
 
-files = """.env
+files = """
+.env
 Dockerfile
 main.py
 requirements.txt
 telegram_my.py
 udpipe.py
-udpipe_requests.py"""
+udpipe_requests.py
+"""
 
-files = files.split('\n')
 # dest_folder = r'Z:\06\go\books\to_linux'
 dest_folder = 'to_linux'
 
@@ -30,7 +31,9 @@ for filename in os.listdir(dest_folder):
     except Exception as e:
         print('Failed to delete %s. Reason: %s' % (file_path, e))
 
-for file in files:
+for file in files.split('\n'):
+    if file == "":
+        continue
     shutil.copy(file, dest_folder)
 
 login = 'test'
