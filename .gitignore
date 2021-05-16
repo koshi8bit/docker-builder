@@ -1,5 +1,5 @@
-copy/.env
-to_linux/
+docker-builder/.env
+to_build/
 
 .idea/
 __pycache__/

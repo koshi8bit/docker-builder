@@ -1,0 +1,7 @@
+.env
+Dockerfile
+main.py
+requirements.txt
+telegram_my.py
+udpipe.py
+udpipe_requests.py
