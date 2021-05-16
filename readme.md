@@ -18,7 +18,7 @@
 1. Если был запущен батник *push.bat* - то запускается процедура загрузки контейнера в dockerhub (copy.py **-r -p**)
 
 ## Что нужно 
-* Скачать putty и pscp [тут](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html)
+* Скачать **putty и pscp** [тут](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html)
 * Настроить запуск docker без sudo [(полная статья)](https://docs.docker.com/engine/install/linux-postinstall/):
   * `sudo groupadd docker`
   * `sudo usermod -aG docker $USER`
