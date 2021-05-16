@@ -1,0 +1,6 @@
+copy/.env
+to_linux/
+
+.idea/
+__pycache__/
+
