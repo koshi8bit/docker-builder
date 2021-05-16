@@ -58,7 +58,7 @@ def copy_folder():
             if f == "":
                 continue
             shutil.copy('../' + f, src_folder)
-    print('*** COPY OK ***')
+    print('*** COPY TMP OK ***')
 
 
 def run_script(text):
@@ -99,14 +99,16 @@ if __name__ == '__main__':
     dest_ip = os.getenv('dest_ip')
     dest_port = os.getenv('dest_port')
     os.system(f'start /B /Wait "" {pscp} -P {dest_port} -r -pw {linux_pass} {src_folder+"/*"} {linux_login}@{dest_ip}:{dest_folder}')
+    print('*** COPY REMOTE OK ***')
 
     container_name = os.getenv('container_name')
     dockerhub_login = os.getenv('dockerhub_login')
 
     build()
 
+    if args.restart:
+        restart()
+
     if args.push:
         push()
 
-    if args.restart:
-        restart()
