@@ -14,6 +14,7 @@ args = parser.parse_args()
 
 delete_later = []
 
+
 def restart():
     with open('restart.sh', 'r') as file:
         script = file.read()
@@ -68,18 +69,22 @@ def run_script(text):
         build_script_file.write(text)
 
     build_script_file.close()
+    cmd = f'start /B /Wait "" {putty} -ssh {dest_ip} -P {dest_port} -l {linux_login} -pw {linux_pass} -m {script_filename}'
+    # print('running', cmd)
+    os.system(cmd)
 
-    os.system(f'start /B /Wait "" {putty} -load "deb" -l {linux_login} -pw {linux_pass} -m {script_filename}')
     time.sleep(1)
     os.remove(script_filename)
 
 
 if __name__ == '__main__':
     load_dotenv()
+
+    dest_ip = os.getenv('dest_ip')
+    dest_port = os.getenv('dest_port')
+
     src_folder = os.getenv('src_folder')
     src_folder = f'../{src_folder}'
-    clear_folder()
-    copy_folder()
 
     linux_login = os.getenv('dest_login')
     linux_pass = os.getenv('dest_pass')
@@ -90,14 +95,22 @@ if __name__ == '__main__':
 
     dest_folder = os.getenv('dest_folder')
 
+#     run_script(f'''
+# top
+# ping google.com
+#     ''')
+#     sys.exit()
+
+    clear_folder()
+    copy_folder()
+
+
     with open('clear.sh', 'r') as file:
         script = file.read()
         script = script.replace('{dest_folder}', dest_folder)
         run_script(script)
 
     pscp = os.getenv('pscp')
-    dest_ip = os.getenv('dest_ip')
-    dest_port = os.getenv('dest_port')
     os.system(f'start /B /Wait "" {pscp} -P {dest_port} -r -pw {linux_pass} {src_folder+"/*"} {linux_login}@{dest_ip}:{dest_folder}')
     print('*** COPY REMOTE OK ***')
 
