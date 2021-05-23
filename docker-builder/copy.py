@@ -70,6 +70,7 @@ def run_script(text):
 
     build_script_file.close()
     cmd = f'start /B /Wait "" {putty} -ssh {dest_ip} -P {dest_port} -l {linux_login} -pw {linux_pass} -m {script_filename}'
+    # cmd = f'start /B /Wait "" {putty} -load "deb" -l {linux_login} -pw {linux_pass} -m {script_filename}'
     # print('running', cmd)
     os.system(cmd)
 
