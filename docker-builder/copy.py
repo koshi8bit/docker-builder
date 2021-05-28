@@ -10,6 +10,7 @@ import argparse
 parser = argparse.ArgumentParser(description="Flip a switch by setting a flag")
 parser.add_argument('-p', '--push', action='store_true', help="Push to dockerhub")
 parser.add_argument('-r', '--restart', action='store_true', help="Restart containers")
+parser.add_argument('-d', '--debug', action='store_true', help="Show debug")
 args = parser.parse_args()
 
 delete_later = []
@@ -62,7 +63,7 @@ def copy_folder():
     print('*** COPY TMP OK ***')
 
 
-def run_script(text):
+def run_script_old(text):
     # _, script_filename = tempfile.mkstemp()
     script_filename = 'script.tmp'
     with open(script_filename, 'w') as build_script_file:
@@ -71,11 +72,36 @@ def run_script(text):
     build_script_file.close()
     cmd = f'start /B /Wait "" {putty} -ssh {dest_ip} -P {dest_port} -l {linux_login} -pw {linux_pass} -m {script_filename}'
     # cmd = f'start /B /Wait "" {putty} -load "deb" -l {linux_login} -pw {linux_pass} -m {script_filename}'
-    # print('running', cmd)
+    print(f'running {cmd}\n{text}')
     os.system(cmd)
 
     time.sleep(1)
     os.remove(script_filename)
+
+
+def run_script(text):
+    # plink root@192.168.101.1 -pw SecretRootPwd (hostname;crontab -l)
+    # plink root@192.168.101.1 -m C:\commands.txt
+    # plink test@127.0.0.1 -pw 11 -P 2222 (hostname;ls)
+    # _, script_filename = tempfile.mkstemp()
+    # plink test@127.0.0.1 -batch -pw 11 -P 2222 (hostname;ls)
+
+    script_filename = 'script.tmp'
+    with open(script_filename, 'w') as build_script_file:
+        build_script_file.write(text)
+
+    cmd = f'start /B /Wait "" {plink} {linux_login}@{dest_ip} -batch -pw {linux_pass} -P {dest_port} -m {script_filename}'
+    # cmd = f'start /B /Wait "" {putty} -ssh {dest_ip} -P {dest_port} -l {linux_login} -pw {linux_pass} -m {script_filename}'
+    # cmd = f'start /B /Wait "" {putty} -load "deb" -l {linux_login} -pw {linux_pass} -m {script_filename}'
+    if args.debug:
+        print(f'running {cmd}\n{text}')
+        
+    print(os.system(cmd))
+
+    time.sleep(1)
+    os.remove(script_filename)
+
+    print(f'running\n{text}')
 
 
 if __name__ == '__main__':
@@ -93,6 +119,8 @@ if __name__ == '__main__':
     putty = os.getenv('putty')
     putty_profile = os.getenv('putty_profile')
     clear_script = os.getenv('clear_script')
+
+    plink = os.getenv('plink')
 
     dest_folder = os.getenv('dest_folder')
 
