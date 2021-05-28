@@ -20,7 +20,7 @@ def restart():
     with open('restart.sh', 'r') as file:
         script = file.read()
         run_script(script)
-    print('*** RESTART OK ***')
+    print('*** RESTART OK ***\n')
 
 
 def build():
@@ -29,7 +29,7 @@ cd {dest_folder}
 docker build -t {container_name} .
 docker tag {container_name} {dockerhub_login}/{container_name}
     """)
-    print('*** BUILD OK ***')
+    print('*** BUILD OK ***\n')
 
 
 def push():
@@ -37,7 +37,7 @@ def push():
 echo {os.getenv('dockerhub_pass')} | docker login --username {dockerhub_login} --password-stdin
 docker push {dockerhub_login}/{container_name}
         """)
-    print('*** PUSH OK ***')
+    print('*** PUSH OK ***\n')
 
 
 def clear_folder():
@@ -50,7 +50,7 @@ def clear_folder():
                 shutil.rmtree(file_path)
         except Exception as e:
             print('Failed to delete %s. Reason: %s' % (file_path, e))
-    print('*** CLEAR OK ***')
+    print('*** CLEAR OK ***\n')
 
 
 def copy_folder():
@@ -60,7 +60,7 @@ def copy_folder():
             if f == "":
                 continue
             shutil.copy('../' + f, src_folder)
-    print('*** COPY TMP OK ***')
+    print('*** COPY TMP OK ***\n')
 
 
 def run_script_old(text):
@@ -91,17 +91,13 @@ def run_script(text):
         build_script_file.write(text)
 
     cmd = f'start /B /Wait "" {plink} {linux_login}@{dest_ip} -batch -pw {linux_pass} -P {dest_port} -m {script_filename}'
-    # cmd = f'start /B /Wait "" {putty} -ssh {dest_ip} -P {dest_port} -l {linux_login} -pw {linux_pass} -m {script_filename}'
-    # cmd = f'start /B /Wait "" {putty} -load "deb" -l {linux_login} -pw {linux_pass} -m {script_filename}'
     if args.debug:
         print(f'running {cmd}\n{text}')
-        
+
     print(os.system(cmd))
 
     time.sleep(1)
     os.remove(script_filename)
-
-    print(f'running\n{text}')
 
 
 if __name__ == '__main__':
